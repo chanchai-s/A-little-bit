@@ -5,7 +5,7 @@ import useProductStore from "../stores/product.store.js";
 import useUserStore from "../stores/user.store.js";
 
 const SellerUserListProduct = () => {
-  const { allProducts } = useProductStore();
+  const { allProducts} = useProductStore();
   const { user } = useUserStore();
   const navigate = useNavigate();
   const hdlAddProduct = () => {

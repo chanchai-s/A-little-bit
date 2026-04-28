@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useParams } from "react-router";
 import useSocketStore from "../stores/socket.store";
 import { io } from 'socket.io-client'
+import AuctionCard from "../components/AuctionCard.jsx"
 
 const AuctionPage = () => {
   const { auctionId } = useParams()
@@ -124,50 +125,17 @@ const AuctionPage = () => {
               {lots.map((lot, idx) => (
                 <div
                   key={idx}
-                  className="min-w-[280px] md:min-w-[320px] flex-shrink-0 flex flex-col group cursor-pointer snap-start overflow-hidden"
+                  className="min-w-[280px] md:min-w-[320px] flex-shrink-0 snap-start"
                 >
-                  {/* Image */}
-                  <div className="relative overflow-hidden rounded-2xl">
-                    <img
-                      className="w-full aspect-[4/5] object-cover transition-transform duration-700 group-hover:scale-108"
-                      alt={lot.title}
-                      src={lot.img}
-                    />
-
-                    {/* Gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
-
-                    {/* Live badge */}
-                    <div className="absolute top-3 left-3 bg-white/80 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
-                      <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse block" />
-                      <span className="font-['Manrope'] text-[9px] uppercase tracking-widest text-[#570000] font-bold">Live</span>
-                    </div>
-
-                    {/* Hover reveal */}
-                    <div className="absolute bottom-0 left-0 right-0 px-5 py-4 translate-y-full group-hover:translate-y-0 transition-transform duration-400 ease-out">
-                      <div className="flex justify-between items-end">
-                        <div>
-                          <p className="text-white/60 text-[10px] uppercase tracking-widest mb-0.5">Current Bid</p>
-                          <p className="text-white font-['Noto_Serif'] text-2xl font-bold">{lot.price}</p>
-                        </div>
-                        <button className="bg-gradient-to-r from-[#570000] to-[#800000] text-white px-5 py-2.5 rounded-sm font-['Manrope'] text-[11px] uppercase tracking-widest hover:opacity-90 transition-all active:scale-95 shadow-lg shadow-[#570000]/30">
-                          Join
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Info */}
-                  <div className="mt-4 px-1 flex items-start gap-2">
-                    <div className="flex flex-1 justify-between min-w-0">
-                      <h4 className="font-['Noto_Serif'] text-xl leading-snug text-[#1c1b1b] truncate">{lot.title}</h4>
-                      <span className="text-[14px] text-primary mt-1 font-['Manrope'] tracking-wide">Time Left: {lot.timeLeft}</span>
-                    </div>
-                    {/* <div className="text-right shrink-0">
-                      <p className="text-[9px] uppercase tracking-widest text-stone-400 mb-0.5">Bid</p>
-                      <p className="font-['Noto_Serif'] text-lg text-[#800000] font-semibold">{lot.price}</p>
-                    </div> */}
-                  </div>
+                  <AuctionCard
+                    index={idx}
+                    img={lot.img}
+                    title={lot.title}
+                    badge="Live"
+                    price={lot.price}
+                    timeLeft={`Time Left: ${lot.timeLeft}`}
+                    aspectRatio="aspect-[4/5]"
+                  />
                 </div>
               ))}
             </div>
@@ -286,58 +254,18 @@ const AuctionPage = () => {
               img: "https://lh3.googleusercontent.com/aida-public/AB6AXuARgMOZMmzVNrDz1n4_Y5rdr1efWWp2BraAsv5xYqoW7kg9mWdx_UwxsYkxHwgVqs4I3pIKE-2_7BkqdrNrRjum_NLj_mBIwtTlLt943SCKE2yD606kQOZHLNcnnSCt3q7rrwBcddrnFZEDj0kxiGHqkwn7nx1qNwgq3JLBx-Ys3SEzv0--LZq5t_oOOl9PXcuzAtbueKCwW12TH7332Xig3N-MuWUxtdFnFC5p44AuyQHijUsyH7Zr3uqJFBbtXpO9N82ftUSQr2fO",
             },
           ].map((product, i) => (
-            <div
+            <AuctionCard
               key={i}
-              className={`flex flex-col group cursor-pointer ${product.shift ? "md:mt-12" : ""}`}
-            >
-              {/* Image */}
-              <div className="relative overflow-hidden rounded-2xl">
-                <img
-                  src={product.img}
-                  alt={product.title}
-                  className="w-full aspect-[4/5] object-cover transition-transform duration-700 group-hover:scale-108"
-                />
-
-                {/* Gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
-
-                {/* Lot badge */}
-                <div className="absolute top-3 left-3 bg-white/80 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
-                  <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse block" />
-                  <span className="font-['Manrope'] text-[9px] uppercase tracking-widest text-[#570000] font-bold">Lot #{812 + i}</span>
-                </div>
-
-                {/* Hover reveal */}
-                <div className="absolute bottom-0 left-0 right-0 px-5 py-4 translate-y-full group-hover:translate-y-0 transition-transform duration-400 ease-out">
-                  <div className="flex justify-between items-end">
-                    <div>
-                      <p className="text-white/60 text-[10px] uppercase tracking-widest mb-0.5">Current Bid</p>
-                      <p className="text-white font-['Noto_Serif'] text-2xl font-bold">{product.price}</p>
-                    </div>
-                    <button className="bg-gradient-to-r from-[#570000] to-[#800000] text-white px-5 py-2.5 rounded-sm font-['Manrope'] text-[11px] uppercase tracking-widest hover:opacity-90 transition-all active:scale-95 shadow-lg shadow-[#570000]/30">
-                      Join
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Info */}
-              <div className="mt-4 px-1 flex justify-between items-start gap-2">
-                <div className="flex flex-col flex-1 min-w-0">
-                  <span className="text-[10px] font-semibold uppercase tracking-widest text-stone-400 mb-1 block">
-                    {product.cat}
-                  </span>
-                  <h3 className="font-['Noto_Serif'] text-xl leading-snug text-[#1c1b1b]">
-                    {product.title}
-                  </h3>
-                  <span className="text-[11px] text-[#570000] mt-1.5 font-['Manrope'] tracking-wide">Time Left: 50m 30s</span>
-                </div>
-                <div className="text-right shrink-0">
-                  <p className="text-[9px] uppercase tracking-widest text-stone-400 mb-0.5">Current Bid</p>
-                  <p className="font-['Noto_Serif'] text-lg text-[#800000] font-semibold">{product.price}</p>
-                </div>
-              </div>
-            </div>
+              index={i}
+              img={product.img}
+              title={product.title}
+              cat={product.cat}
+              badge={`Lot #${812 + i}`}
+              price={product.price}
+              timeLeft="Time Left: 50m 30s"
+              aspectRatio="aspect-[4/5]"
+              onJoin={() => {}}
+            />
           ))}
         </section>
       </main>

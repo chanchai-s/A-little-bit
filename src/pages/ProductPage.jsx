@@ -3,15 +3,28 @@ import useProductStore from "../stores/product.store.js";
 import TimeCountdown from "../components/TimeCountdown.jsx";
 import { ProductListByPages } from "../components/productPage/PageProducts.jsx";
 import DisplayProducts from "../components/productPage/DisplayProducts.jsx";
+import useAuctionStore from "../stores/auction.store.js"
+
 const ProductPage = () => {
-  const {
-    productPage,
-    setProductPage,
-    allProducts,
-    allCategories,
-    getAllProducts,
-    getCategories,
-  } = useProductStore();
+  // const {
+  //   productPage,
+  //   setProductPage,
+  //   allProducts,
+  //   allCategories,
+  //   getAllProducts,
+  //   getCategories,
+  // } = useProductStore();
+
+  const clearAuctionById = useAuctionStore((state)=>state.clearAuctionById)
+  const productPage = useProductStore((state)=>state.productPage)
+  const setProductPage = useProductStore((state)=>state.setProductPage)
+  const allProducts = useProductStore((state)=>state.allProducts)
+  const allCategories = useProductStore((state)=>state.allCategories)
+  const getAllProducts = useProductStore((state)=>state.getAllProducts)
+  const getCategories = useProductStore((state)=>state.getCategories)
+  const clearProductById = useProductStore((state)=>state.clearProductById)
+  // filter only active product
+  // const {}
   const [selectCategoryId, setSelectCategoryId] = useState("");
   const [selectCategoryName, setSelectCategoryName] = useState("All");
   // const [productByCategory, setProductByCategory] = useState("");
@@ -19,6 +32,8 @@ const ProductPage = () => {
   useEffect(() => {
     getAllProducts();
     getCategories();
+    clearAuctionById()
+    clearProductById()
   }, []);
   
   useEffect(() => {
@@ -51,8 +66,10 @@ const ProductPage = () => {
   const startIndex = (productPage - 1) * limit;
   const endIndex = startIndex + limit;
   // 2. Slice the data for display
-  // console.log("currentProducts", currentProducts);
+  console.log("currentProducts", currentProducts);
+  // const filteredActiveProduct = currentProducts.filter((item)=>item.)
   const displayProducts = currentProducts.slice(startIndex, endIndex);
+  console.log('displayProducts', displayProducts)
 
   // console.log("currentProducts", currentProducts);
   // console.log("allProducts", allProducts);

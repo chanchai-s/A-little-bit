@@ -9,6 +9,7 @@ import {
   UserIconNoCircle,
 } from "../icons";
 import useUserStore from "../stores/user.store.js";
+import Avatar from "./Avatar.jsx";
 
 const NavBar = () => {
   const [isVisible, setIsVisible] = useState(true);
@@ -54,15 +55,16 @@ const NavBar = () => {
 
   return (
     <nav
-      className={`sticky top-0 w-full z-50 flex justify-between items-center px-6 md:px-12 py-6 max-w-screen-2xl mx-auto bg-surface/70 backdrop-blur-md border-b-[0.5px] border-outline-variant/20 ${
+      className={`sticky top-0 w-full z-50 flex justify-between items-center px-6 md:px-12 py-6 max-w-screen-2xl mx-auto bg-surface/70 backdrop-blur-md border-b-[0.5px] border-outline-variant/20 transition-transform duration-300 ${
         isVisible ? "translate-y-0" : "-translate-y-full"
       }`}
     >
-      <Link>
+      <Link to="/">
         <div className="font-headline italic text-2xl text-red">
           A Little Bid
         </div>
       </Link>
+
       <div className="hidden md:flex gap-12">
         <NavLink to="/" className={navLinkClass}>
           Home
@@ -77,6 +79,7 @@ const NavBar = () => {
           Active Bid
         </NavLink>
       </div>
+
       <div className="flex items-center gap-6">
         <NavLink
           to=""
@@ -90,59 +93,70 @@ const NavBar = () => {
         >
           <BlackCartIcon />
         </NavLink>
-        <div className="dropdown dropdown-end">
-          {/* ส่วนปุ่มกด (Trigger) */}
-          <div
-            tabIndex={0}
-            role="button"
-            className="w-7 h-7 flex items-center justify-center rounded-xl transition-all active:scale-95 duration-200 cursor-pointer"
-          >
-            <UserIcon />
-          </div>
 
-          {/* ส่วนเนื้อหา (Menu) */}
-          <ul
-            tabIndex={0}
-            className="dropdown-content menu bg-surface-container-lowest rounded-box z-10 w-50 p-2 shadow-sm border border-outline-variant mt-2"
-          >
-            <li>
-              <NavLink
-                to="/user_profile"
-                className="flex items-center gap-3 px-4 py-2 hover:bg-surface-container-high transition-colors rounded-lg"
-              >
-                <UserIconNoCircle className="w-5" />
-                <span className="font-label text-[12px] uppercase tracking-widest text-primary">
-                  My Profile
-                </span>
-              </NavLink>
-            </li>
-            {isSeller && (
+        {/* ส่วนแสดง User หรือปุ่ม Login */}
+        {user ? (
+          <div className="dropdown dropdown-end">
+            {/* Trigger: กด Avatar เพื่อเปิดเมนู */}
+            <div
+              tabIndex={0}
+              role="button"
+              className="w-10 h-10 rounded-full flex items-center justify-center transition-all active:scale-95 duration-200 cursor-pointer overflow-hidden border border-gray-300 bg-blue-300"
+            >
+              <Avatar user={user} />
+            </div>
+
+            {/* Menu */}
+            <ul
+              tabIndex={0}
+              className="dropdown-content menu bg-surface-container-lowest rounded-box z-10 w-50 p-2 shadow-sm border border-outline-variant mt-2"
+            >
               <li>
                 <NavLink
-                  to="/seller_products"
+                  to="/user_profile"
                   className="flex items-center gap-3 px-4 py-2 hover:bg-surface-container-high transition-colors rounded-lg"
                 >
-                  <BagIcon />
+                  <UserIconNoCircle className="w-5" />
                   <span className="font-label text-[12px] uppercase tracking-widest text-primary">
-                    My products
+                    My Profile
                   </span>
                 </NavLink>
               </li>
-            )}
-            <li>
-              <button
-                className="flex items-center gap-3 px-4 py-2 
-      hover:bg-red-50 transition-colors rounded-lg text-primary"
-                onClick={logout}
-              >
-                <LogoutIcon className="w-5" />
-                <span className="font-label text-[12px] uppercase tracking-widest">
-                  Log out
-                </span>
-              </button>
-            </li>
-          </ul>
-        </div>
+              {isSeller && (
+                <li>
+                  <NavLink
+                    to="/seller_products"
+                    className="flex items-center gap-3 px-4 py-2 hover:bg-surface-container-high transition-colors rounded-lg"
+                  >
+                    <BagIcon />
+                    <span className="font-label text-[12px] uppercase tracking-widest text-primary">
+                      My products
+                    </span>
+                  </NavLink>
+                </li>
+              )}
+              <li>
+                <button
+                  className="flex items-center gap-3 px-4 py-2 hover:bg-red-50 transition-colors rounded-lg text-primary"
+                  onClick={logout}
+                >
+                  <LogoutIcon className="w-5" />
+                  <span className="font-label text-[12px] uppercase tracking-widest">
+                    Log out
+                  </span>
+                </button>
+              </li>
+            </ul>
+          </div>
+        ) : (
+          /* ถ้ายังไม่ Login ให้แสดงปุ่ม LOGIN */
+          <Link
+            to="/login"
+            className="text-[12px] font-bold uppercase hover:text-red transition-colors"
+          >
+            LOGIN
+          </Link>
+        )}
       </div>
     </nav>
   );

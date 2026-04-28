@@ -149,7 +149,7 @@ export default function ALittleBidRegister() {
     role: "", // Buyer หรือ Seller
     phone: "",
   });
-  const {register}=useUserStore()
+  const { register } = useUserStore();
 
   const [agreed, setAgreed] = useState(false);
   const [errors, setErrors] = useState({});

@@ -37,7 +37,7 @@ const useSocketStore = create(persist((set, get) => ({
             }
         } catch (error) {
             console.log('error', error)
-            alert("Logout failed")
+            console.log("Logout failed")
         }
     },
     joinAuction: (auctionId) => {
@@ -48,16 +48,16 @@ const useSocketStore = create(persist((set, get) => ({
             }
             // alert("join successful")
         } catch (error) {
-            alert("join auction failed")
+            console.log("join auction failed")
         }
     },
     leaveAuction: (auctionId) => {
         try {
             const socket = get().socket
             if (socket) {
-                socket.emit('leave_auction', auntionId);
+                socket.emit('leave_auction', auctionId);
             }
-            alert("leave auction")
+            console.log("leave auction")
         } catch (error) {
             console.log("error",error.message)
         }

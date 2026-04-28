@@ -32,7 +32,8 @@ function DisplayProducts() {
     const filteredBidByUser = bidData.filter((item)=>item.bidderId === user.id)
     // getAuctionByBidId then getProductByAuctionId
     const filteredAuctionByBid = allAuction.filter((item)=>item.id == filteredBidByUser[0].id)
-    const displayProducts = allProducts.filter((item)=>item.id===filteredAuctionByBid[0].productId)
+    console.log('filteredAuctionByBid', filteredAuctionByBid)
+    const displayProducts = allProducts.filter((item)=>item.id===filteredAuctionByBid?.[0]?.productId)
     
   return (
     <>

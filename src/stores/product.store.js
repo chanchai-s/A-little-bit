@@ -7,6 +7,7 @@ import {
   apiCreateProduct,
   apiUpdateProduct,
   apiDeleteProduct,
+  apiCreateImages,
 } from "../api/apiMain.js";
 
 const useProductStore = create()(
@@ -21,7 +22,7 @@ const useProductStore = create()(
 
       getAllProducts: async () => {
         const resp = await apiGetAllProducts();
-        // console.log("getAllProducts", resp.data.responses);
+        console.log("getAllProducts", resp.data.responses);
         set({ allProducts: resp.data.responses });
       },
       getCategories: async () => {
@@ -30,9 +31,10 @@ const useProductStore = create()(
         set({ allCategories: resp.data.responses });
       },
       getProductsById: async (id) => {
+        console.log('id-productbyid', id)
         const resp = await apiGetProductsById(id);
+        console.log("getProductsById", resp.data.responses);
         set({ productById: resp.data.responses });
-        // console.log("getProductsById", resp.data.responses);
       },
       createProduct: async (body) => {
         const resp = await apiCreateProduct(body);
@@ -49,9 +51,17 @@ const useProductStore = create()(
         return resp.data.responses;
       },
       // apiDeleteProduct
+      createImages: async (imagesUrl) => {
+        const resp = await apiCreateImages(imagesUrl)
+        console.log('resp-createimages', resp.data.responses)
+        return resp.data.responses
+      },
+      clearProductById: () => {
+        set({productById:[]})
+      }
     }),
     {
-      name: "auction-storage",
+      name: "product-page-storage",
     },
   ),
 );

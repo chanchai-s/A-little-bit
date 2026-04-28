@@ -17,8 +17,7 @@ function EditUserAddress({ defaultAddress }) {
   useEffect(() => {
     if (defaultAddress) {
       reset(defaultAddress);
-  // console.log("useEffect", defaultAddress);
-
+      // console.log("useEffect", defaultAddress);
     }
   }, [defaultAddress, reset]);
 
@@ -63,7 +62,7 @@ function EditUserAddress({ defaultAddress }) {
             <input
               className="w-full bg-transparent border-0 border-b border-outline/30 py-2 px-0 text-sm focus:outline-none focus:border-primary transition-colors font-body"
               type="text"
-            //   defaultValue={defaultAddress?.label}
+              //   defaultValue={defaultAddress?.label}
               {...register("label")}
             />
           </div>
@@ -75,7 +74,7 @@ function EditUserAddress({ defaultAddress }) {
             <input
               className="w-full bg-transparent border-0 border-b border-outline/30 py-2 px-0 text-sm focus:outline-none focus:border-primary transition-colors font-body"
               type="text"
-            //   defaultValue={defaultAddress?.street}
+              //   defaultValue={defaultAddress?.street}
               {...register("street")}
             />
           </div>
@@ -87,7 +86,7 @@ function EditUserAddress({ defaultAddress }) {
             <input
               className="w-full bg-transparent border-0 border-b border-outline/30 py-2 px-0 text-sm focus:outline-none focus:border-primary transition-colors font-body"
               type="text"
-            //   defaultValue={defaultAddress?.city}
+              //   defaultValue={defaultAddress?.city}
               {...register("city")}
             />
           </div>
@@ -99,7 +98,7 @@ function EditUserAddress({ defaultAddress }) {
             <input
               className="w-full bg-transparent border-0 border-b border-outline/30 py-2 px-0 text-sm focus:outline-none focus:border-primary transition-colors font-body"
               type="text"
-            //   defaultValue={defaultAddress?.state}
+              //   defaultValue={defaultAddress?.state}
               {...register("state")}
             />
           </div>
@@ -111,7 +110,7 @@ function EditUserAddress({ defaultAddress }) {
             <input
               className="w-full bg-transparent border-0 border-b border-outline/30 py-2 px-0 text-sm focus:outline-none focus:border-primary transition-colors font-body"
               type="text"
-            //   defaultValue={defaultAddress?.postalCode}
+              //   defaultValue={defaultAddress?.postalCode}
               {...register("postalCode")}
             />
           </div>
@@ -123,7 +122,7 @@ function EditUserAddress({ defaultAddress }) {
             <input
               className="w-full bg-transparent border-0 border-b border-outline/30 py-2 px-0 text-sm focus:outline-none focus:border-primary transition-colors font-body"
               type="text"
-            //   defaultValue={defaultAddress?.country}
+              //   defaultValue={defaultAddress?.country}
               {...register("country")}
             />
           </div>

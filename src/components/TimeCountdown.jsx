@@ -64,7 +64,9 @@ const formatTime = (ms) => {
     <>
       {/* <div className="grid grid-cols-4 gap-4"> */}
       <div key={product.id} className="rounded-xl text-red-950">
-        Time Left
+        <p className="uppercase text-[10px]">
+          Time Left
+        </p>
         <div className="material-symbols-outlined text-[16px] text-primary">
           {formatTime(diff)}
         </div>

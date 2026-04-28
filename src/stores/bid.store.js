@@ -6,11 +6,11 @@ const useBidStore = create()(
   persist((set, get) => ({
     bidData: null,
     newBid: [],
+    winner: null,
     setNewBid: (newPrice) => {
       set((state) => ({
-        newBid:
-          typeof newPrice === "function" ? newPrice(state.newBid) : newPrice,
-      }));
+        newBid: typeof newPrice === 'function' ? newPrice(state.newBid) : newPrice
+      }))
     },
     getAllBid: async () => {
       const resp = await apiGetAllBid();
@@ -22,18 +22,8 @@ const useBidStore = create()(
       const resp = await apiGetBidById(bidId);
       // console.log('apiGetBidById', resp)
     },
-    // Connection state
-    isConnected: false,
-
-    // Auction data
-    //   currentItem: null,
-    currentHighestBid: null,
-    bids: [],
-    winner: null,
-    status: "idle", // idle | active | ended
-
-    // Actions
-    setConnected: (status) => set({ isConnected: status }),
+ // Actions
+  setConnected: (status) => set({ isConnected: status }),
 
     setBidHistory: (bids) =>
       set({
@@ -42,24 +32,25 @@ const useBidStore = create()(
         isBidsLoading: false,
       }),
 
-    addBid: (bid) => {
-      set((state) => ({
-        bids: [bid, ...state.bids],
-        currentHighestBid: bid,
-      }));
-      console.log("currentHighestBid", get().currentHighestBid);
-    },
+      addBid: (bid) => {
+        set((state) => ({
+          bids: [bid, ...state.bids],
+          currentHighestBid: bid,
+        }));
+        console.log("currentHighestBid", get().currentHighestBid);
+      },
 
-    setWinner: (winner) => {
-        set({ winner });
-        console.log('winner from zustand:', get().winner);
-},
+        setWinner: (winner) => {
+          set({ winner });
+          console.log('winner from zustand:', get().winner);
+        },
+        clearWinner: () => set({ winner: null }),
 
-    reset: () =>
-      set({ bids: [], winner: null, currentHighestBid: null, status: "idle" }),
+          reset: () =>
+            set({ bids: [], winner: null, currentHighestBid: null, status: "idle" }),
   })),
 
-  { name: "bid-storage" },
+  { name: 'bid-storage' }
 );
 
 export default useBidStore;
