@@ -169,16 +169,16 @@ const AuctionCard = ({
             </span>
           )}
         </div>
-        {auctionDetail && (
+        {/* {auctionDetail && ( */}
           <div className="text-right shrink-0">
             <p className="text-[9px] uppercase tracking-widest text-stone-400 mb-0.5">
               Current Bid
             </p>
             <p className="font-['Noto_Serif'] text-lg text-[#800000] font-semibold tracking-wider">
-              {auctionDetail.startingPrice}
+              {price}
             </p>
           </div>
-        )}
+        {/* )} */}
       </div>
     </motion.div>
   );

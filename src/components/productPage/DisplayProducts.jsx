@@ -29,15 +29,15 @@ function DisplayProducts({ displayProducts, allCategories }) {
   const hldPriceLoading = (lastBid, auction) => {
     if (!allAuction || !bidData) {
       return <div>Loading auctions...</div>;
-    } else {
-      return lastBid ? `$${lastBid?.amount}` : `$${auction?.startingPrice}`;
+    } else if (lastBid) {
+      return `$${lastBid?.amount}`;
     }
+    return `$${auction?.startingPrice}`;
   };
 
   useEffect(() => {
     getAllBid();
     getAllAuction();
-    // console.log('bidData', bidData)
   }, []);
 
   return (

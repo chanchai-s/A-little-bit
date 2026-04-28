@@ -3,6 +3,9 @@ import { useParams } from "react-router";
 import useSocketStore from "../stores/socket.store";
 import { io } from 'socket.io-client'
 import AuctionCard from "../components/AuctionCard.jsx"
+import useProductStore from "../stores/product.store.js"
+import useAuctionStore from "../stores/auction.store.js"
+import useBidStore from "../stores/bid.store.js"
 
 const AuctionPage = () => {
   const { auctionId } = useParams()
@@ -11,7 +14,10 @@ const AuctionPage = () => {
   // --- Smaller Lots Carousel ---
   const carouselRef = useRef(null)
   const [carouselIndex, setCarouselIndex] = useState(0)
-
+  const {allAuction} = useAuctionStore()
+  const {bidData} = useBidStore()
+  // const lots = bidData.
+ console.log('allAuction', bidData)
   const lots = [
     {
       title: "Patek Heritage '52",
@@ -80,7 +86,7 @@ const AuctionPage = () => {
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
             </div>
-            {/* Editorial Glass Overlay */}
+            {/* Editorial Glass Overlay */} 
             <div className="absolute bottom-0 left-0 right-0 p-4 bg-white/70 backdrop-blur-[24px] flex flex-col md:flex-row justify-between items-end md:items-center">
               <div className="max-w-xl text-left mx-2">
                 <span className="font-['Manrope'] text-[10px] uppercase tracking-[0.2em] text-[#570000] mb-2 block font-semibold">

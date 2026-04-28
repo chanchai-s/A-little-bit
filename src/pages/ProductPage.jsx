@@ -15,13 +15,13 @@ const ProductPage = () => {
   //   getCategories,
   // } = useProductStore();
 
-  const clearAuctionById = useAuctionStore((state)=>state.clearAuctionById)
   const productPage = useProductStore((state)=>state.productPage)
   const setProductPage = useProductStore((state)=>state.setProductPage)
   const allProducts = useProductStore((state)=>state.allProducts)
   const allCategories = useProductStore((state)=>state.allCategories)
   const getAllProducts = useProductStore((state)=>state.getAllProducts)
   const getCategories = useProductStore((state)=>state.getCategories)
+  const clearAuctionById = useAuctionStore((state)=>state.clearAuctionById)
   const clearProductById = useProductStore((state)=>state.clearProductById)
   // filter only active product
   // const {}

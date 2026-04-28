@@ -7,6 +7,7 @@ import {
   apiUpdateAuction,
   apiDeleteAuction,
   apiGetAcutionByProductId,
+  apiGetPopularAuction
 } from "../api/apiMain.js";
 import { connect } from "socket.io-client";
 
@@ -14,7 +15,8 @@ const useAuctionStore = create()(
   persist(
     (set, get) => ({
       allAuction: null,
-      auctionById: null,
+      popularAuction:null,
+      auctionById: [],
       currentPrice: 0,
       endTime: 0,
       serverOffset: 0,
@@ -30,7 +32,6 @@ const useAuctionStore = create()(
       updateEndtime: (endTime) => {
         set({ endTime });
       },
-
       getAllAuction: async () => {
         const resp = await apiGetAllAuction();
         // console.log("getAllAuction", resp.data.responses);
@@ -48,13 +49,18 @@ const useAuctionStore = create()(
       getAuctionById: async (auctionId) => {
         console.log("auctionidddd", typeof auctionId);
         const resp = await apiGetAuctionById(auctionId);
-        console.log("getAuctionById", resp.data.responses);
-        set({ auctionById: resp.data?.responses });
+        // console.log("getAuctionById", resp.data.responses);
+        set({ auctionById: resp.data.responses });
         return resp.data.responses;
       },
       getAuctionByProductId: async (productId) => {
         const resp = await apiGetAcutionByProductId(productId);
         // console.log("getAuctionByProductId", resp.data.responses);
+      },
+      getPopularAuction:async ()=>{
+        const resp = await apiGetPopularAuction();
+        set({popularAuction:resp.data.responses})
+        console.log('getPopularAuction', resp.data.responses)
       },
 
       updateAuction: async (auctionId) => {
@@ -71,7 +77,7 @@ const useAuctionStore = create()(
       },
       clearAuctionById: () => {
         console.log('clear')
-        set({auctionById:null})
+        set({auctionById:[]})
       }
     }),
     {

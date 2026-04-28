@@ -55,7 +55,7 @@ const NavBar = () => {
 
   return (
     <nav
-      className={`sticky top-0 w-full z-50 flex justify-between items-center px-6 md:px-12 py-6 max-w-screen-2xl mx-auto bg-surface/70 backdrop-blur-md border-b-[0.5px] border-outline-variant/20 transition-transform duration-300 ${
+      className={`sticky top-0 w-full z-50 flex justify-between items-center px-6 md:px-12 py-6 mx-auto bg-surface/70 backdrop-blur-md border-b-[0.5px] border-outline-variant/20 transition-transform duration-300 ${
         isVisible ? "translate-y-0" : "-translate-y-full"
       }`}
     >
