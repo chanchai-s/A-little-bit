@@ -24,6 +24,7 @@ const guestRouter = createBrowserRouter([
   { path: "/register", element: <Register /> },
   { path: "*", element: <HomePage /> },
 ]);
+
 const userRouter = createBrowserRouter([
   {
     path: "/",
@@ -40,8 +41,6 @@ const userRouter = createBrowserRouter([
       { path: "my_orders", element: <OrderList /> },
       { path: "favorite", element: <Favorite /> },
       { path: "payment", element: <Payment /> },
-      { path: "login", element: <LoginPage /> },
-      { path: "register", element: <Register /> },
     ],
   },
 ]);
@@ -49,10 +48,10 @@ const userRouter = createBrowserRouter([
 function AppRouter() {
   const user = useUserStore((state) => state.user);
   // console.log('user', user)
-  const finalRouter = user ? userRouter : guestRouter;
+  // const userRouter = user 
   return (
     <Suspense>
-      {<RouterProvider router={finalRouter}></RouterProvider>}
+      {<RouterProvider router={userRouter}></RouterProvider>}
     </Suspense>
   );
 }

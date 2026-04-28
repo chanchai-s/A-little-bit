@@ -54,3 +54,6 @@ export const apiDeleteAuction = (auctionId) =>
 //BID
 export const apiGetAllBid = () => mainApi.get(`/bids`)
 export const apiGetBidById = (bidId) => mainApi.get(`/bids/${bidId}`)
+
+// Payment 
+
