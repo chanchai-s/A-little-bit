@@ -36,7 +36,7 @@ const userRouter = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: "user_profile", element: <UserProfilePage /> },
-      { path: "ongoing_auctions", element: <AuctionPage /> },
+      // { path: "ongoing_auctions", element: <AuctionPage /> },
       { path: "seller_products", element: <SellerUserListProduct /> },
       { path: "auction_bid/:auctionId", element: <AuctionBid /> },
       { path: "products", element: <ProductPage /> },

@@ -63,6 +63,7 @@ const useUserStore = create()(
       editUserProfile: async (userId, data) => {
         try {
           const resp = await apiEditUserProfileById(userId, data);
+          console.log('resp', resp)
           set({ user: resp.data.responses });
           return resp.data.responses;
         } catch (error) {
