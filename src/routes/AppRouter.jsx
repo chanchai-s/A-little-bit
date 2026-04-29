@@ -5,7 +5,7 @@ import UserProfilePage from "../pages/UserProfilePage.jsx";
 import HomePage from "../pages/HomePage.jsx";
 import AuctionPage from "../pages/AuctionPage.jsx";
 import SellerUserListProduct from "../pages/SellerListProduct.jsx";
-import ProductPageForSeller from "../pages/ProductPageForSeller.jsx";
+// import ProductPageForSeller from "../pages/ProductPageForSeller.jsx";
 import AuctionBid from "../pages/AuctionBid.jsx";
 import ProductPage from "../pages/ProductPage.jsx";
 import AddProduct from "../pages/AddProduct.jsx";
@@ -43,7 +43,7 @@ const userRouter = createBrowserRouter([
       { path: "my_active_bids", element: <ActiveBid /> },
       { path: "add_product", element: <AddProduct /> },
       { path: "my_orders", element: <OrderList /> },
-      { path: "favorite", element: <Favorite /> },
+      // { path: "favorite", element: <Favorite /> },
       { path: "payment", element: <Payment /> },
     ],
   },

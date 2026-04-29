@@ -7,10 +7,13 @@ const useBidStore = create()(
     bidData: null,
     newBid: [],
     winner: null,
+    bids: null,
+    currentHighestBid: null,
     setNewBid: (newPrice) => {
       set((state) => ({
-        newBid: typeof newPrice === 'function' ? newPrice(state.newBid) : newPrice
-      }))
+        newBid:
+          typeof newPrice === "function" ? newPrice(state.newBid) : newPrice,
+      }));
     },
     getAllBid: async () => {
       const resp = await apiGetAllBid();
@@ -22,17 +25,21 @@ const useBidStore = create()(
       const resp = await apiGetBidById(bidId);
       // console.log('apiGetBidById', resp)
     },
- // Actions
-  setConnected: (status) => set({ isConnected: status }),
+    // Actions
+    setConnected: (status) => set({ isConnected: status }),
 
-    setBidHistory: (bids) =>
-      set({
+    setBidHistory: (bids) => {
+      console.log('setBidhistoty')
+       set({
         bids,
         currentHighestBid: bids[0] ?? null, // assume sorted desc from DB
         isBidsLoading: false,
-      }),
+      })
+    },
+     
 
       addBid: (bid) => {
+        console.log("add bid", bid)
         set((state) => ({
           bids: [bid, ...state.bids],
           currentHighestBid: bid,
@@ -40,17 +47,18 @@ const useBidStore = create()(
         console.log("currentHighestBid", get().currentHighestBid);
       },
 
-        setWinner: (winner) => {
-          set({ winner });
-          console.log('winner from zustand:', get().winner);
-        },
-        clearWinner: () => set({ winner: null }),
+    setWinner: (winner) => {
+      set({ winner });
+      console.log("winner from zustand:", get().winner);
+    },
+    clearWinner: () => set({ winner: null }),
 
           reset: () =>
             set({ bids: [], winner: null, currentHighestBid: null, status: "idle" }),
-  })),
-
+  }),
   { name: 'bid-storage' }
+)
+
 );
 
 export default useBidStore;

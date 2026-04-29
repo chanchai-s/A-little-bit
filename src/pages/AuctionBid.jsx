@@ -23,7 +23,7 @@ const AuctionBid = () => {
   const { productById, allCategories, getProductsById } = useProductStore();
   const { auctionById, getAuctionById, setCurrentPrice, currentPrice } =
     useAuctionStore();
-  // console.log('auctionById.product.images', auctionById.product.images)
+  // console.log('auctionById.product.images', auctionById?.product.images)
   const { socket, joinAuction, leaveAuction, connect } = useSocketStore();
   const {
     newBid,
@@ -40,10 +40,13 @@ const AuctionBid = () => {
   const { id, categoryId, name, description, sellerId, updatedAt, images } =
     auctionById?.product || {};
   const { auctionId } = useParams();
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, formState, setValue, getValues } =
+    useForm();
   const filterCategoryName = allCategories.filter(
     (cate) => categoryId === cate.id,
   );
+
+  const { isDirty } = formState;
 
   const hdlOnSubmit = ({ amount }) => {
     const minRequiredPrice = currentHighestBid
@@ -59,6 +62,21 @@ const AuctionBid = () => {
     reset();
   };
 
+  const hdlUpdateAmountInput = (times) => {
+    const currentVal = getValues("amount");
+
+    const baseValue = currentVal
+      ? Number(currentVal)
+      : currentHighestBid
+        ? Number(currentHighestBid.amount)
+        : Number(auctionById?.startingPrice);
+
+    const increment = Number(auctionById?.minIncrement || 0);
+    const newValue = baseValue + (increment * times);
+  
+    setValue("amount", newValue, {shouldDirty: true });
+    console.log(getValues("amount"))
+  };
 
   useEffect(() => {
     if (!auctionById) {
@@ -66,29 +84,35 @@ const AuctionBid = () => {
     }
     connectSocket();
     joinAuctionRoom(auctionId);
+
+    setIsLoading(false);
+    console.log("use effect is running");
+
+    console.log("auctionById", auctionById);
+    console.log("auctionId", auctionId);
+
     if (!auctionById || String(auctionById?.id) !== String(auctionId)) {
       console.warn(
         `[AuctionBid] auctionId mismatch: expected ${auctionId}, got ${auctionById?.id}. Join cancelled.`,
       );
       return;
     }
-    setIsLoading(false);
-    console.log('bids1', bids)
-    return () => {
-      leaveAuctionRoom();
-    };
-  }, [auctionById,auctionId]);
 
-  useEffect(()=>{
+    return () => {
+      leaveAuctionRoom(auctionId);
+    };
+  }, [auctionById, auctionId]);
+
+  useEffect(() => {
     getAllUser();
     getAuctionById(auctionId);
-  },[auctionId, getAllUser])
+  }, [auctionId, getAllUser]);
 
   useEffect(() => {
     if (!auctionById?.bids) return; // ← guard: wait until data is real
+    console.log("auctionById2", auctionById);
     setBidHistory(auctionById.bids);
   }, [auctionById]);
-
 
   return (
     <div className="bg-[#fcf9f8] text-[#1c1b1b] font-['Manrope'] antialiased min-h-screen">
@@ -118,9 +142,9 @@ const AuctionBid = () => {
                   <h1 className="text-5xl md:text-6xl font-['Noto_Serif'] text-[#1c1b1b] leading-tight">
                     {auctionById?.product?.name}
                   </h1>
-                  <p className="text-xl font-['Noto_Serif'] italic text-[#5e5e5e]">
+                  {/* <p className="text-xl font-['Noto_Serif'] italic text-[#5e5e5e]">
                     {auctionById?.product?.description}
-                  </p>
+                  </p> */}
                 </div>
 
                 <div className="max-w-none text-lg text-[#5a413d] leading-relaxed font-light space-y-4">
@@ -156,8 +180,9 @@ const AuctionBid = () => {
                       </span>
                     </div>
                     <div className="text-right">
-                      <p className="font-['Manrope'] text-[10px] text-stone-500 mb-2 uppercase tracking-widest">
-                        Time Left
+                      <p className="uppercase text-[10px]">Status</p>
+                      <p className="font-['Manrope'] text-[12px] text-dark-red uppercase tracking-widest font-bold mb-9">
+                        {auctionById?.status}
                       </p>
                       <div className="text-2xl font-['Noto_Serif'] text-[#1c1b1b]">
                         {auctionById?.product ? (
@@ -168,41 +193,72 @@ const AuctionBid = () => {
                       </div>
                     </div>
                   </div>
-
-                  <form onSubmit={handleSubmit(hdlOnSubmit)}>
-                    <div className="space-y-6">
-                      <div className="space-y-2">
-                        <label className="font-['Manrope'] uppercase tracking-widest text-[10px] text-stone-500">
-                          Your Bid
-                        </label>
-                        <div className="relative flex items-center">
-                          <span className="absolute left-4 text-stone-400">
-                            B
-                          </span>
-                          <input
-                            type="number"
-                            placeholder={`Minimum ${
-                              currentHighestBid
-                                ? Number(currentHighestBid?.amount) +
-                                  Number(auctionById?.minIncrement)
-                                : Number(auctionById?.startingPrice) +
-                                  Number(auctionById?.minIncrement)
-                            }`}
-                            {...register("amount")}
-                            className="w-full bg-[#ebe7e7] border-none rounded-sm py-4 pl-8 pr-4 focus:ring-1 focus:ring-[#570000] focus:bg-white transition-all outline-none"
-                          />
-                        </div>
-                        <div>
-                          <button type="button">
-                            Bid Increase: +200 +400 +600
+                  {auctionById.status !== "ACTIVE" ? (
+                    <></>
+                  ) : (
+                    <form onSubmit={handleSubmit(hdlOnSubmit)}>
+                      <div className="space-y-6">
+                        <div className="space-y-2">
+                          <label className="font-['Manrope'] uppercase tracking-widest text-[10px] text-stone-500">
+                            Your Bid
+                          </label>
+                          <div className="relative flex items-center">
+                            <span className="absolute left-4 text-stone-400">
+                              B
+                            </span>
+                            <input
+                              type="number"
+                              placeholder={`Minimum ${
+                                currentHighestBid
+                                  ? Number(currentHighestBid?.amount) +
+                                    Number(auctionById?.minIncrement)
+                                  : Number(auctionById?.startingPrice) +
+                                    Number(auctionById?.minIncrement)
+                              }`}
+                              {...register("amount")}
+                              className="w-full bg-[#ebe7e7] border-none rounded-sm py-4 pl-8 pr-4 focus:ring-1 focus:ring-[#570000] focus:bg-white transition-all outline-none"
+                            />
+                          </div>
+                          <div className="flex gap-5 justify-between">
+                          <button
+                            onClick={()=>hdlUpdateAmountInput(1)}
+                            type="button"
+                            className="w-30 bg-gradient-to-r from-[#00008B] to-[#0000CD] text-white font-['Manrope'] py-4 rounded-sm shadow-lg hover:scale-[1.01] active:scale-95 transition-all text-xs font-bold disabled:bg-none disabled:bg-gray-300 disabled:text-gray-500"
+                          >
+                            +{auctionById?.minIncrement}
                           </button>
+                          <button
+                            onClick={()=>hdlUpdateAmountInput(2)}
+                            type="button"
+                            className="w-30 bg-gradient-to-r from-[#00008B] to-[#0000CD] text-white font-['Manrope'] py-4 rounded-sm shadow-lg hover:scale-[1.01] active:scale-95 transition-all text-xs font-bold disabled:bg-none disabled:bg-gray-300 disabled:text-gray-500"
+                          >
+                            +{auctionById?.minIncrement * 2}
+                          </button>
+                          <button
+                            onClick={()=>hdlUpdateAmountInput(3)}
+                            type="button"
+                            className="w-30 bg-gradient-to-r from-[#00008B] to-[#0000CD] text-white font-['Manrope'] py-4 rounded-sm shadow-lg hover:scale-[1.01] active:scale-95 transition-all text-xs font-bold disabled:bg-none disabled:bg-gray-300 disabled:text-gray-500"
+                          >
+                            +{auctionById?.minIncrement * 3}
+                          </button>
+                          <button
+                            onClick={()=>hdlUpdateAmountInput(4)}
+                            type="button"
+                            className="w-30 bg-gradient-to-r from-[#00008B] to-[#0000CD] text-white font-['Manrope'] py-4 rounded-sm shadow-lg hover:scale-[1.01] active:scale-95 transition-all text-xs font-bold disabled:bg-none disabled:bg-gray-300 disabled:text-gray-500"
+                          >
+                            +{auctionById?.minIncrement * 4}
+                          </button>
+                          </div>
                         </div>
+                        <button
+                          className="w-full bg-gradient-to-r from-[#570000] to-[#800000] text-white font-['Manrope'] uppercase tracking-widest py-4 rounded-sm shadow-lg hover:scale-[1.01] active:scale-95 transition-all text-xs font-bold disabled:bg-none disabled:bg-gray-300 disabled:text-gray-500 disabled:scale-100 disabled:cursor-not-allowed"
+                          disabled={!isDirty || auctionById.status !== "ACTIVE"}
+                        >
+                          Place Bid
+                        </button>
                       </div>
-                      <button className="w-full bg-gradient-to-r from-[#570000] to-[#800000] text-white font-['Manrope'] uppercase tracking-widest py-4 rounded-sm shadow-lg hover:scale-[1.01] active:scale-95 transition-all text-xs font-bold">
-                        Place Bid
-                      </button>
-                    </div>
-                  </form>
+                    </form>
+                  )}
                 </div>
 
                 <div className="bg-[#f6f3f2]  text-stone-50 p-8 rounded-lg relative max-h-[300px]">

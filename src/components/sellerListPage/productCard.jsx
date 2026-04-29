@@ -3,17 +3,13 @@ import useProductStore from "../../stores/product.store.js";
 import useUserStore from "../../stores/user.store.js";
 import ProductImageSlide from "../productPage/ProductImageSlide.jsx";
 
-function ProductSellerCard() {
+function ProductSellerCard({product}) {
   const { allProducts, allCategories } = useProductStore();
   const { user } = useUserStore();
   const [userProduct, setUserProduct] = useState("");
-  const filterUserProduct = allProducts.filter(
+  const filterUserProduct = product.filter(
     (item) => item.sellerId === user.id,
   );
-  console.log('user', user)
-  console.log('allProducts', allProducts)
-  console.log('filterUserProduct', filterUserProduct)
-
   return (
     <>
       {filterUserProduct.map((item) => {

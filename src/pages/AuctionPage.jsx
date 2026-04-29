@@ -131,7 +131,7 @@ const AuctionPage = () => {
               {lots.map((lot, idx) => (
                 <div
                   key={idx}
-                  className="min-w-[280px] md:min-w-[320px] flex-shrink-0 snap-start"
+                  className="min-w-[160px] md:min-w-[200px] flex-shrink-0 snap-start"
                 >
                   <AuctionCard
                     index={idx}
@@ -140,7 +140,7 @@ const AuctionPage = () => {
                     badge="Live"
                     price={lot.price}
                     timeLeft={`Time Left: ${lot.timeLeft}`}
-                    aspectRatio="aspect-[4/5]"
+                    aspectRatio="aspect-square"
                   />
                 </div>
               ))}
@@ -154,11 +154,10 @@ const AuctionPage = () => {
                   <button
                     key={idx}
                     onClick={() => scrollToIndex(idx)}
-                    className={`rounded-full transition-all duration-300 ${
-                      carouselIndex === idx
+                    className={`rounded-full transition-all duration-300 ${carouselIndex === idx
                         ? "w-6 h-2 bg-[#570000]"
                         : "w-2 h-2 bg-stone-300 hover:bg-stone-400"
-                    }`}
+                      }`}
                     aria-label={`Go to slide ${idx + 1}`}
                   />
                 ))}
@@ -169,26 +168,24 @@ const AuctionPage = () => {
                 <button
                   onClick={handlePrev}
                   disabled={carouselIndex === 0}
-                  className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-200 ${
-                    carouselIndex === 0
+                  className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-200 ${carouselIndex === 0
                       ? "border-stone-200 text-stone-300 cursor-not-allowed"
                       : "border-[#570000] text-[#570000] hover:bg-red hover:text-white active:scale-95"
-                  }`}
+                    }`}
                   aria-label="Previous"
                 >
-                  <span className="material-symbols-outlined text-[18px]"><img src="https://www.svgrepo.com/show/382820/pointer-left.svg" alt="arrow back" className="w-8 hover:w-12"/></span>
+                  <span className="material-symbols-outlined text-[18px]"><img src="https://www.svgrepo.com/show/382820/pointer-left.svg" alt="arrow back" className="w-8 hover:w-12" /></span>
                 </button>
                 <button
                   onClick={handleNext}
                   disabled={carouselIndex === lots.length - 1}
-                  className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-200 ${
-                    carouselIndex === lots.length - 1
+                  className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-200 ${carouselIndex === lots.length - 1
                       ? "border-stone-200 text-stone-300 cursor-not-allowed"
                       : "border-[#570000] text-[#570000] hover:bg-red hover:text-white active:scale-95"
-                  }`}
+                    }`}
                   aria-label="Next"
                 >
-                  <span className="material-symbols-outlined text-[18px]"><img src="https://www.svgrepo.com/show/382819/pointer-right.svg" alt="arrow forward" className="w-8 hover:w-12"/></span>
+                  <span className="material-symbols-outlined text-[18px]"><img src="https://www.svgrepo.com/show/382819/pointer-right.svg" alt="arrow forward" className="w-8 hover:w-12" /></span>
                 </button>
               </div>
             </div>
@@ -237,8 +234,7 @@ const AuctionPage = () => {
           </div>
         </section>
 
-        {/* Asymmetric Product Grid */}
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 text-left">
+        <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10 text-left">
           {[
             {
               cat: "Horology",
@@ -251,13 +247,18 @@ const AuctionPage = () => {
               title: "Emerald Teardrop Earrings",
               price: "$45,000",
               img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDuAvm231iZr8vdySwn-kOte7I8FAZWRf2jZRJkTU8vDYgXT3E9mZGbYFV9_CAgoW6N6XLV15_OHLq06GyCMtN-3m6Jv2skc2A0d7g0wRFi0ITn8-TEMrEsrZxdNb-sEaizWSQ4T5g7t5BLzDsrqzZkuSWOKPcEA20CeRV-lD33sBnIgp8cUssEmNGamSEKA_et0tRwgUINpvfweDHNgvZ5Ztmhlx1McOG-JLoqD3IckFZ4I3OJ7oc5fw8PVy6tNSGkZWDRdUuYwaLa",
-              shift: true,
             },
             {
               cat: "Design",
               title: "Brutalist Alabaster Vessel",
               price: "$8,200",
               img: "https://lh3.googleusercontent.com/aida-public/AB6AXuARgMOZMmzVNrDz1n4_Y5rdr1efWWp2BraAsv5xYqoW7kg9mWdx_UwxsYkxHwgVqs4I3pIKE-2_7BkqdrNrRjum_NLj_mBIwtTlLt943SCKE2yD606kQOZHLNcnnSCt3q7rrwBcddrnFZEDj0kxiGHqkwn7nx1qNwgq3JLBx-Ys3SEzv0--LZq5t_oOOl9PXcuzAtbueKCwW12TH7332Xig3N-MuWUxtdFnFC5p44AuyQHijUsyH7Zr3uqJFBbtXpO9N82ftUSQr2fO",
+            },
+            {
+              cat: "Fine Art",
+              title: "Abstract Canvas No. 7",
+              price: "$22,500",
+              img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDpFpbxMtXrk-gAQTJlnM-kPYDSICNwrJ_1E-rbxKyIspXOg5Nk4ECjL2O9VpcWgm-Xut2g7IAUSLSCI5y_c7Rc9shIbIVlgm3BdTCVQ9wSbdxeHX2TguhQFgohftgqge20yA1wgx6vQIsXEC0hx4a9TTW10-ZQ-Sm6PIsNMa4qz4EMzlHsXvKGhBIR31IqTHcsBLyl9lR2mC8vo8bq1zarp-rp6N6cLKMxsgj67vkdT83XGerTFOkXa3GjNgT880lh0_A_JcsEcVcq",
             },
           ].map((product, i) => (
             <AuctionCard
@@ -268,9 +269,9 @@ const AuctionPage = () => {
               cat={product.cat}
               badge={`Lot #${812 + i}`}
               price={product.price}
-              timeLeft="Time Left: 50m 30s"
-              aspectRatio="aspect-[4/5]"
-              onJoin={() => {}}
+              timeLeft="50m 30s"
+              aspectRatio="aspect-[3/4]"
+              onJoin={() => { }}
             />
           ))}
         </section>

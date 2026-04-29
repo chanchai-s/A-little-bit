@@ -1,12 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import useBidStore from "../stores/bid.store.js";
+import { apiGetUserById } from "../api/apiMain.js";
 
-export default function AuctionResultModal({ currentUserId }) {
+export default function AuctionResultModal({ currentUserId, auctionId }) {
   const { winner, clearWinner } = useBidStore();
   const hasShownRef = useRef(false);
   const [winnerUsername, setWinnerUsername] = useState(null);
   const [loadingUser, setLoadingUser] = useState(false);
+
+  const getUserById = async (id) => {
+    const resp = await apiGetUserById(id);
+    setWinnerUsername(resp.data.responses.username);
+  }
 
   // Fetch winner's username when a winner is set
   useEffect(() => {
@@ -19,11 +25,13 @@ export default function AuctionResultModal({ currentUserId }) {
     // Only fetch if there's actually a winner (not a no-bid close)
     if (winner.winnerId) {
       setLoadingUser(true);
-      axios
-        .get(`/api/users/${winner.winnerId}`) // adjust endpoint to yours
-        .then((res) => setWinnerUsername(res.data.username))
-        .catch(() => setWinnerUsername(null))
-        .finally(() => setLoadingUser(false));
+      try {
+        getUserById(winner.winnerId);
+      } catch (error) {
+        console.log('error at get id', error)
+      } finally {
+        setLoadingUser(false);
+      }
     }
   }, [winner]);
 

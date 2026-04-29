@@ -23,11 +23,13 @@ const ProductPage = () => {
   const getCategories = useProductStore((state)=>state.getCategories)
   const clearAuctionById = useAuctionStore((state)=>state.clearAuctionById)
   const clearProductById = useProductStore((state)=>state.clearProductById)
+  console.log('allProducts', allProducts)
+  console.log('status', allProducts?.[0].auctions?.[0].status)
   // filter only active product
   // const {}
   const [selectCategoryId, setSelectCategoryId] = useState("");
   const [selectCategoryName, setSelectCategoryName] = useState("All");
-  // const [productByCategory, setProductByCategory] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [currentProducts, setCurrentProducts] = useState(allProducts);
   useEffect(() => {
     getAllProducts();
@@ -36,26 +38,36 @@ const ProductPage = () => {
     clearProductById()
   }, []);
   
+  // Use a unified useEffect for all filtering
   useEffect(() => {
-    if (Array.isArray(allProducts)) {
-      setCurrentProducts(allProducts);
+    if (!Array.isArray(allProducts)) return;
+    console.log('allProducts', allProducts)
+
+    let filtered = allProducts.filter((p)=>p.auctions?.[0].status==="ACTIVE");
+    console.log('filtered', filtered)
+
+    // 1. Filter by Category
+    if (selectCategoryId) {
+      filtered = filtered.filter((p) => p.categoryId === selectCategoryId);
     }
-  }, [allProducts]);
+
+    // 2. Filter by Search Query (name or description)
+    if (searchQuery.trim() !== "") {
+      const lowerQuery = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (p) =>
+          p.name?.toLowerCase().includes(lowerQuery) ||
+          p.description?.toLowerCase().includes(lowerQuery)
+      );
+    }
+    setCurrentProducts(filtered);
+    setProductPage(1); // Reset to page 1 on new filter
+  }, [allProducts, selectCategoryId, searchQuery]);
 
   const hdlCategorySelect = (id, name) => {
     setSelectCategoryId(id);
-    setProductPage(1);
     setSelectCategoryName(name);
 
-    // Use the ID from the argument, NOT the state
-    // This fixes the "one step slow" bug!
-    let filtered;
-    if (name === "All" || !id) {
-      filtered = allProducts;
-    } else {
-      filtered = allProducts.filter((p) => p.categoryId === id);
-    }
-    setCurrentProducts(filtered);
     // Optional: Close dropdown by removing focus from the button
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
@@ -84,7 +96,9 @@ const ProductPage = () => {
           <div className="max-w-3xl mx-auto relative group">
             <input
               type="text"
-              placeholder="Search by category or product details"
+              placeholder="Search by product name or details"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full h-16 pl-16 pr-8 bg-[#f6f3f2] border-none rounded-full focus:ring-2 focus:ring-[#570000]/20 text-lg shadow-sm outline-none"
             />
           </div>

@@ -44,6 +44,13 @@ const NavBar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const hdlDropDownSelect = () => {
+    // Optional: Close dropdown by removing focus from the button
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  };
+
   const navLinkClass = ({ isActive }) =>
     `text-black font-medium hover:text-red transition-colors duration-300 font-label uppercase tracking-widest text-[12px] ${
       isActive
@@ -108,6 +115,7 @@ const NavBar = () => {
 
             {/* Menu */}
             <ul
+              onClick={() => hdlDropDownSelect()}
               tabIndex={0}
               className="dropdown-content menu bg-surface-container-lowest rounded-box z-10 w-50 p-2 shadow-sm border border-outline-variant mt-2"
             >

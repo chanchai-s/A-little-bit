@@ -107,7 +107,7 @@ const HomePage = () => {
                 <div className="lg:col-span-5 group cursor-pointer relative overflow-hidden rounded-2xl shadow-xl h-full md:h-full">
                   <div className="relative w-full h-full">
                     <img
-                      src={`${lots?.[0].product.images?.[0].imageUrl}`}
+                      src={`${lots?.[0].product.images?.[0]?.imageUrl }` || "https://unsplash.com/photos/space-needle-landmark-against-a-clear-blue-sky-_FIJZSbYphE"}
                       alt="Luxury watch detail"
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
@@ -119,7 +119,7 @@ const HomePage = () => {
                         {lots?.[0].product.name}
                       </h1>
                       <p className="font-['Manrope'] text-dark-red text-bold text-3xl max-w-md">
-                        {lots?.[0].bids?.[0].amount}
+                        {lots?.[0].bids?.[0]?.amount}
                       </p>
                     </div>
                     <div className="mt-8 md:mt-0 flex flex-col items-center">
@@ -146,11 +146,11 @@ const HomePage = () => {
                       <div className="max-w-[280px] md:min-w-[320px] flex-shrink-0 snap-start">
                         <AuctionCard
                           index={idx}
-                          img={lot.product.images?.[0].imageUrl}
+                          img={lot.product.images?.[0]?.imageUrl || "https://unsplash.com/photos/space-needle-landmark-against-a-clear-blue-sky-_FIJZSbYphE"}
                           title={lot.product.name}
                           description={lot.product.description}
                           badge="Live"
-                          price={lot.bids?.[0].amount}
+                          price={lot.bids?.[0]?.amount}
                           timeLeft={<TimeCountdown product={lot.product} />}
                           aspectRatio="aspect-[4/5]"
                         />

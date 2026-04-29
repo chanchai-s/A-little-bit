@@ -78,7 +78,7 @@ const UserProfilePage = () => {
                 </span>
               </NavLink>
               <NavLink
-                to="/activebid"
+                to="/my_active_bids"
                 className="flex items-center gap-3 px-4 py-3 text-stone-600 hover:text-stone-900 hover:bg-surface-container-low transition-all duration-300"
               >
                 <span className="text-sm tracking-wide uppercase font-medium">
