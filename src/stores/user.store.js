@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { persist } from "zustand/middleware";
 import {
   apiLogin,
   apiRegister,
@@ -9,14 +9,13 @@ import {
   apiEditUserAddressById,
   apiEditUserProfileById,
 } from "../api/apiMain.js";
-import useSocketStore from "./socket.store.js";
 import { connectSocket, disconnectSocket } from "../socket/socketService.js";
 
 const useUserStore = create()(
   persist(
-    (set, get) => ({
+    (set) => ({
       user: null,
-      users: null,
+      users: [],
       token: "",
       userAddresses: [],
 
@@ -30,22 +29,26 @@ const useUserStore = create()(
         return resp.data.user;
       },
       register: async (body) => {
-        const resp = await apiRegister(body);
+        await apiRegister(body);
       },
       getAllUser: async () => {
         // console.log("getalluser")
         const resp = await apiGetAllUser();
+        const responses = Array.isArray(resp.data.responses)
+          ? resp.data.responses
+          : [];
         // console.log('resp_getAllUser', resp)
-        set({ users: resp.data.responses });
-        return resp.data.responses;
+        set({ users: responses });
+        return responses;
       },
       getUserById: async (id) => {
         const resp = await apiGetUserById(id);
+        const response = resp.data.responses ?? null;
         set({
-          user: resp.data.responses,
-          userAddresses: resp.data.responses.addresses,
+          user: response,
+          userAddresses: response?.addresses ?? [],
         });
-        return resp.data.responses;
+        return response;
       },
       // Action to log out
       logout: () => {

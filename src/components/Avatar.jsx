@@ -14,7 +14,7 @@ const Avatar = ({ user }) => {
   }
 
   // ถ้าไม่มีรูป ให้แสดงตัวอักษรย่อจากชื่อ
-  const initials = user?.username.slice(0,1).toUpperCase()
+  const initials = user?.username?.slice(0, 1)?.toUpperCase() ?? "?";
   return (
     <div className="w-full h-full flex grow justify-center align-middle items-center">
       {initials}

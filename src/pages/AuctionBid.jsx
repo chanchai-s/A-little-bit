@@ -36,6 +36,7 @@ const AuctionBid = () => {
     winner,
   } = useBidStore();
   const { user, users, getAllUser } = useUserStore();
+  const usersList = Array.isArray(users) ? users : [];
   const [isLoading, setIsLoading] = useState(true);
   const { id, categoryId, name, description, sellerId, updatedAt, images } =
     auctionById?.product || {};
@@ -173,9 +174,9 @@ const AuctionBid = () => {
                       </span>
                       <span className="text-[14px] text-secondary mt-3 text-headline uppercase font-bold mx-2">
                         {currentHighestBid
-                          ? users.find(
+                          ? (usersList.find(
                               (u) => u.id === currentHighestBid?.bidderId,
-                            )?.username
+                            )?.username ?? "Unknown bidder")
                           : "No Bidder Yet"}
                       </span>
                     </div>
@@ -193,7 +194,7 @@ const AuctionBid = () => {
                       </div>
                     </div>
                   </div>
-                  {auctionById.status !== "ACTIVE" ? (
+                  {auctionById?.status !== "ACTIVE" ? (
                     <></>
                   ) : (
                     <form onSubmit={handleSubmit(hdlOnSubmit)}>
@@ -252,7 +253,7 @@ const AuctionBid = () => {
                         </div>
                         <button
                           className="w-full bg-gradient-to-r from-[#570000] to-[#800000] text-white font-['Manrope'] uppercase tracking-widest py-4 rounded-sm shadow-lg hover:scale-[1.01] active:scale-95 transition-all text-xs font-bold disabled:bg-none disabled:bg-gray-300 disabled:text-gray-500 disabled:scale-100 disabled:cursor-not-allowed"
-                          disabled={!isDirty || auctionById.status !== "ACTIVE"}
+                          disabled={!isDirty || auctionById?.status !== "ACTIVE"}
                         >
                           Place Bid
                         </button>
@@ -287,8 +288,8 @@ const AuctionBid = () => {
                                 <div className="text-left">
                                   <p className="text-[12px] font-bold font-['Manrope'] text-primary uppercase tracking-widest">
                                     {
-                                      users?.find((i) => e.bidderId === i.id)
-                                        .username
+                                      usersList.find((i) => e.bidderId === i.id)
+                                        ?.username ?? "Unknown bidder"
                                     }
                                     {/* {e.bidderId == user.id ? user.username : `User ${e.bidderId}`}  */}
                                   </p>
@@ -309,7 +310,7 @@ const AuctionBid = () => {
               </div>
             </div>
           </div>
-          <AuctionResultModal currentUserId={user.id} />
+          <AuctionResultModal currentUserId={user?.id} />
         </main>
       )}
     </div>

@@ -7,8 +7,8 @@ function ProductSellerCard({product}) {
   const { allProducts, allCategories } = useProductStore();
   const { user } = useUserStore();
   const [userProduct, setUserProduct] = useState("");
-  const filterUserProduct = product.filter(
-    (item) => item.sellerId === user.id,
+  const filterUserProduct = (Array.isArray(product) ? product : []).filter(
+    (item) => item.sellerId === user?.id,
   );
   return (
     <>
@@ -42,7 +42,7 @@ function ProductSellerCard({product}) {
                   {item.name}
                 </h3>
                 <p className="text-xs text-[#59413e] uppercase tracking-tighter mb-4">
-                  {category.name}
+                  {category?.name}
                 </p>
               </div>
 

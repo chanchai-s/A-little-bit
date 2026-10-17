@@ -11,6 +11,7 @@ import ProductPage from "../pages/ProductPage.jsx";
 import AddProduct from "../pages/AddProduct.jsx";
 import OrderList from "../pages/OrderList.jsx";
 import Payment from "../pages/Payment.jsx";
+import Complete from "../pages/Complete.jsx";
 import Favorite from "../pages/Favorite.jsx";
 import ActiveBid from "../pages/ActiveBid.jsx";
 import LoginPage from "../pages/Login.jsx";
@@ -44,7 +45,8 @@ const userRouter = createBrowserRouter([
       { path: "add_product", element: <AddProduct /> },
       { path: "my_orders", element: <OrderList /> },
       // { path: "favorite", element: <Favorite /> },
-      { path: "payment", element: <Payment /> },
+      { path: "payment/:auctionId/:bidId", element: <Payment /> },
+      { path: "complete", element: <Complete /> },
     ],
   },
   // prevent white screens on invalid URLs

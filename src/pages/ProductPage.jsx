@@ -24,13 +24,15 @@ const ProductPage = () => {
   const clearAuctionById = useAuctionStore((state)=>state.clearAuctionById)
   const clearProductById = useProductStore((state)=>state.clearProductById)
   console.log('allProducts', allProducts)
-  console.log('status', allProducts?.[0].auctions?.[0].status)
+  console.log('status', allProducts?.[0]?.auctions?.[0]?.status)
   // filter only active product
   // const {}
   const [selectCategoryId, setSelectCategoryId] = useState("");
   const [selectCategoryName, setSelectCategoryName] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
-  const [currentProducts, setCurrentProducts] = useState(allProducts);
+  const [currentProducts, setCurrentProducts] = useState(
+    Array.isArray(allProducts) ? allProducts : []
+  );
   useEffect(() => {
     getAllProducts();
     getCategories();
@@ -43,7 +45,7 @@ const ProductPage = () => {
     if (!Array.isArray(allProducts)) return;
     console.log('allProducts', allProducts)
 
-    let filtered = allProducts.filter((p)=>p.auctions?.[0].status==="ACTIVE");
+    let filtered = allProducts.filter((p)=>p?.auctions?.[0]?.status==="ACTIVE");
     console.log('filtered', filtered)
 
     // 1. Filter by Category

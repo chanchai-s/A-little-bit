@@ -59,3 +59,12 @@ export const apiGetPopularAuction =()=> mainApi.get(`/auctions/popular`)
 //BID
 export const apiGetAllBid = () => mainApi.get(`/bids`);
 export const apiGetBidById = (bidId) => mainApi.get(`/bids/${bidId}`);
+
+//PAYMENT
+export const apiCreateCheckout = (auctionId, bidId, body) =>
+  mainApi.post(`/payments/auction/${auctionId}/bid/${bidId}`, body);
+
+export const apiConfirmCheckout = (sessionId) =>
+  mainApi.get(`/payments/session/${sessionId}`);
+
+export const apiGetMyPayments = () => mainApi.get(`/payments/me`);

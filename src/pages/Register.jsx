@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import useUserStore from "../stores/user.store.js";
+import { registerSchema } from "../validations/RegisLogin.js";
+import { EyeIcon, EyeSlashIcon } from "../icons/index.jsx";
 // ─── Icon components (คงเดิมทั้งหมด) ─────────────────────────────────────
 const EnvelopeIcon = () => (
   <svg
@@ -50,7 +52,7 @@ const InfoIcon = () => (
   </svg>
 );
 
-// ─── Underline Input (คงเดิม) ──────────────────────────────────────
+// ─── Underline Input ──────────────────────────────────────
 function UnderlineInput({
   label,
   id,
@@ -60,8 +62,11 @@ function UnderlineInput({
   placeholder,
   error,
   prefixIcon,
+  togglePassword = false,
 }) {
   const [focused, setFocused] = useState(false);
+  const [show, setShow] = useState(false);
+  const effectiveType = togglePassword ? (show ? "text" : "password") : type;
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
@@ -80,7 +85,7 @@ function UnderlineInput({
         )}
         <input
           id={id}
-          type={type}
+          type={effectiveType}
           value={value || ""}
           onChange={onChange}
           placeholder={placeholder}
@@ -90,6 +95,7 @@ function UnderlineInput({
           className={[
             "w-full bg-transparent outline-none text-sm text-gray-800 py-2 border-b transition-colors duration-200 placeholder:text-gray-400",
             prefixIcon ? "pl-6" : "pl-0",
+            togglePassword ? "pr-7" : "",
             error
               ? "border-b-red-400"
               : focused
@@ -97,6 +103,21 @@ function UnderlineInput({
                 : "border-b-gray-300",
           ].join(" ")}
         />
+        {togglePassword && (
+          <button
+            type="button"
+            onClick={() => setShow((s) => !s)}
+            aria-label={show ? "Hide password" : "Show password"}
+            className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 p-1"
+            tabIndex={-1}
+          >
+            {show ? (
+              <EyeSlashIcon className="w-4 h-4" />
+            ) : (
+              <EyeIcon className="w-4 h-4" />
+            )}
+          </button>
+        )}
       </div>
       {error && <p className="text-[11px] text-red-500 mt-0.5">⚠ {error}</p>}
     </div>
@@ -187,33 +208,34 @@ export default function ALittleBidRegister() {
   const set = (field) => (e) =>
     setForm((f) => ({ ...f, [field]: e.target.value }));
 
-  // Validation (คงเดิม)
+  // Validation via zod
   function validate() {
-    const e = {};
-    if (!form.firstname.trim()) e.firstname = "Required";
-    if (!form.lastname.trim()) e.lastname = "Required";
-    if (!form.username.trim()) e.username = "Required";
-    if (!form.phone.trim()) e.phone = "Required";
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
-      e.email = "Invalid email";
-    if (form.password.length < 8) e.password = "At least 8 characters";
-    if (form.password !== form.confirmPassword)
-      e.confirmPassword = "Passwords do not match";
-    if (!form.street.trim()) e.street = "Required";
-    if (!form.role) e.role = "Please select a role";
-    if (!agreed) e.terms = "You must agree to continue";
-    setErrors(e);
-    return Object.keys(e).length === 0;
+    const result = registerSchema.safeParse({ ...form, agreed });
+    if (result.success) {
+      setErrors({});
+      return true;
+    }
+    const fieldErrors = result.error.flatten().fieldErrors;
+    // Flatten zod's `string[]` per field down to a single message,
+    // matching the existing UnderlineInput's `error` prop shape.
+    const flat = {};
+    for (const key of Object.keys(fieldErrors)) {
+      flat[key] = fieldErrors[key]?.[0];
+    }
+    // The form binds the terms checkbox error to `errors.terms`
+    if (flat.agreed) flat.terms = flat.agreed;
+    setErrors(flat);
+    return false;
   }
 
-  // Handle Manual Submit (คงเดิม)
+  // Handle Manual Submit
   async function handleSubmit(e) {
     e.preventDefault();
+    if (loading) return; // re-entry guard while a request is in flight
     if (!validate()) return;
     setLoading(true);
 
     try {
-      // 1. เตรียมข้อมูลให้ตรงกับที่ Controller ใน Backend รอรับ (Flat Structure)
       const payload = {
         firstname: form.firstname,
         lastname: form.lastname,
@@ -230,16 +252,16 @@ export default function ALittleBidRegister() {
         country: form.country,
       };
 
-      console.log("payload", payload);
-
-      // 2. ส่ง Request
-      register(payload);
-      // 3. อ่าน Response
-
+      await register(payload);
+      // Only mark success once the API has actually resolved
       setSuccess(true);
     } catch (err) {
-      console.error("Submit Error:", err);
-      alert(err.message);
+      const message =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Registration failed. Please try again.";
+      console.error("Submit Error:", message);
+      setErrors((prev) => ({ ...prev, submit: message }));
     } finally {
       setLoading(false);
     }
@@ -337,11 +359,13 @@ export default function ALittleBidRegister() {
               noValidate
               className="w-full max-w-[480px] bg-white rounded-sm px-10 py-10 shadow-xl"
             >
+              <fieldset disabled={loading} className="contents">
               {/* 3. เพิ่มปุ่ม Google Login ด้านบน */}
               <button
                 type="button"
                 onClick={() => loginWithGoogle()}
-                className="w-full mb-6 py-3 border border-gray-200 flex items-center justify-center gap-3 hover:bg-gray-50 transition-all text-[12px] font-semibold tracking-wider text-gray-600 "
+                disabled={loading}
+                className="w-full mb-6 py-3 border border-gray-200 flex items-center justify-center gap-3 hover:bg-gray-50 transition-all text-[12px] font-semibold tracking-wider text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24">
                   <path
@@ -458,9 +482,9 @@ export default function ALittleBidRegister() {
                   </label>
                 </div>
 
-                {errors.roles && (
+                {errors.role && (
                   <p className="text-[11px] text-red-500 mt-1">
-                    {errors.roles}
+                    ⚠ {errors.role}
                   </p>
                 )}
               </div>
@@ -470,6 +494,7 @@ export default function ALittleBidRegister() {
                   label="Password"
                   id="password"
                   type="password"
+                  togglePassword
                   value={form.password}
                   onChange={set("password")}
                   placeholder="••••••••"
@@ -479,6 +504,7 @@ export default function ALittleBidRegister() {
                   label="Confirm"
                   id="confirmPassword"
                   type="password"
+                  togglePassword
                   value={form.confirmPassword}
                   onChange={set("confirmPassword")}
                   placeholder="••••••••"
@@ -503,6 +529,7 @@ export default function ALittleBidRegister() {
                   value={form.label}
                   onChange={set("label")}
                   placeholder="Label"
+                  error={errors.label}
                   prefixIcon={<PinIcon />}
                 />
                 <UnderlineInput
@@ -560,13 +587,23 @@ export default function ALittleBidRegister() {
                 </p>
               )}
 
+              {errors.submit && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-sm text-[11px] text-red-700">
+                  ⚠ {errors.submit}
+                </div>
+              )}
+
               <button
                 type="submit"
                 disabled={loading}
-                className={`w-full py-4 text-white text-[11px] font-semibold tracking-[0.2em]  transition-all ${loading ? "bg-[#6B1313] opacity-70 cursor-not-allowed" : "bg-[#8B1A1A] hover:bg-[#6B1313]"}`}
+                className={`w-full py-4 text-white text-[11px] font-semibold tracking-[0.2em]  transition-all flex items-center justify-center gap-2 ${loading ? "bg-[#6B1313] opacity-70 cursor-not-allowed" : "bg-[#8B1A1A] hover:bg-[#6B1313]"}`}
               >
+                {loading && (
+                  <span className="inline-block w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                )}
                 {loading ? "Processing..." : "Create Collector Account"}
               </button>
+              </fieldset>
             </form>
           )}
 

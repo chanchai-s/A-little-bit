@@ -3,28 +3,34 @@ import { GoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import { mainApi as api } from "../api/apiMain.js";
 import useUserStore from "../stores/user.store.js";
-
-function validateEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
+import { loginSchema } from "../validations/RegisLogin.js";
+import { EyeIcon, EyeSlashIcon } from "../icons/index.jsx";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
   const login = useUserStore((state) => state.login);
   const navigate = useNavigate();
   const token = useUserStore((state) => state.token);
 
-  const canSubmit = validateEmail(email) && password.length >= 8;
+  const parsed = loginSchema.safeParse({ email, password });
+  const canSubmit = parsed.success;
 
   async function handleLogin() {
-    if (!canSubmit) return;
+    if (loading) return; // re-entry guard while a request is in flight
+    const result = loginSchema.safeParse({ email, password });
+    if (!result.success) {
+      setErrors(result.error.flatten().fieldErrors);
+      return;
+    }
+    setErrors({});
     setLoading(true);
 
     try {
-      await login({ email, password });
+      await login(result.data);
 
       console.log("Login Success");
       alert("Login Successful!");
@@ -33,9 +39,9 @@ export default function LoginPage() {
       const message =
         error.response?.data?.message ||
         error.message ||
-        "Login failedInvalid credentials";
+        "Login failed. Invalid credentials.";
       console.error("Login Error:", message);
-      alert(message);
+      setErrors({ submit: [message] });
     } finally {
       setLoading(false);
     }
@@ -59,8 +65,12 @@ export default function LoginPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email"
-            className="w-full mt-1 px-4 py-3 border rounded-lg text-sm focus:ring-2 focus:ring-red-200 outline-none"
+            disabled={loading}
+            className="w-full mt-1 px-4 py-3 border rounded-lg text-sm focus:ring-2 focus:ring-red-200 outline-none disabled:bg-gray-50 disabled:text-gray-400"
           />
+          {errors.email && (
+            <p className="text-xs text-red-500 mt-1">⚠ {errors.email[0]}</p>
+          )}
         </div>
         {/* password */}
         <div className="mb-4">
@@ -74,17 +84,26 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
-              className="w-full mt-1 px-4 py-3 border rounded-lg text-sm focus:ring-2 focus:ring-red-200 outline-none"
+              disabled={loading}
+              className="w-full mt-1 px-4 py-3 border rounded-lg text-sm focus:ring-2 focus:ring-red-200 outline-none disabled:bg-gray-50 disabled:text-gray-400"
             />
 
             <button
               type="button"
               onClick={() => setShow(!show)}
-              className="absolute right-3 top-3 text-xs text-gray-500"
+              aria-label={show ? "Hide password" : "Show password"}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 p-1"
             >
-              {show ? "Hide" : "Show"}
+              {show ? (
+                <EyeSlashIcon className="w-5 h-5" />
+              ) : (
+                <EyeIcon className="w-5 h-5" />
+              )}
             </button>
           </div>
+          {errors.password && (
+            <p className="text-xs text-red-500 mt-1">⚠ {errors.password[0]}</p>
+          )}
         </div>
         {/* forgot */}
         <div className="text-right mb-4">
@@ -95,17 +114,27 @@ export default function LoginPage() {
             Forgot password
           </button>
         </div>
+        {/* api error */}
+        {errors.submit && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700">
+            ⚠ {errors.submit[0]}
+          </div>
+        )}
+
         {/* login btn */}
         <button
           onClick={handleLogin}
           disabled={!canSubmit || loading}
-          className={`w-full py-3 rounded-lg font-bold transition
+          className={`w-full py-3 rounded-lg font-bold transition flex items-center justify-center gap-2
             ${
-              canSubmit
+              canSubmit && !loading
                 ? "bg-red-800 text-white hover:bg-red-900"
                 : "bg-gray-200 text-gray-400 cursor-not-allowed"
             }`}
         >
+          {loading && (
+            <span className="inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+          )}
           {loading ? "Logging in..." : "Login"}
         </button>
         {/* divider */}

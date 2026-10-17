@@ -18,12 +18,12 @@ function ActiveBid() {
   const getAllBid = useBidStore((state) => state.getAllBid);
   const getAllAuction = useAuctionStore((state) => state.getAllAuction);
 
-  if (!bidData || !allAuction || !allProducts || !allCategories) {
+  if (!user || !bidData || !allAuction || !allProducts || !allCategories) {
     return <div>Loading...</div>;
   }
 
   // 2. Find all bids made by the current user
-  const userBids = bidData.filter((bid) => bid.bidderId === user.id);
+  const userBids = bidData.filter((bid) => bid.bidderId === user?.id);
   // 3. Extract unique Auction IDs from those bids
   const userAuctionIds = [...new Set(userBids.map((bid) => bid.auctionId))];
   // 4. Filter allAuction to get the auctions the user participated in

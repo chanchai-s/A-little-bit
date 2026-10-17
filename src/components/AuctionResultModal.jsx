@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router";
 import axios from "axios";
 import useBidStore from "../stores/bid.store.js";
 import { apiGetUserById } from "../api/apiMain.js";
@@ -62,6 +63,7 @@ export default function AuctionResultModal({ currentUserId, auctionId }) {
           <WinnerContent
             amount={winner.amount}
             bidId={winner.bidId}
+            auctionId={auctionId}
             onClose={clearWinner}
           />
         ) : (
@@ -76,7 +78,8 @@ export default function AuctionResultModal({ currentUserId, auctionId }) {
   );
 }
 
-function WinnerContent({ amount, bidId, onClose }) {
+function WinnerContent({ amount, bidId, auctionId, onClose }) {
+  const navigate = useNavigate();
   return (
     <div className="px-8 pt-10 pb-8 text-center">
       <p
@@ -123,7 +126,10 @@ function WinnerContent({ amount, bidId, onClose }) {
       </p>
 
       <button
-        onClick={onClose}
+        onClick={() => {
+          onClose();
+          navigate(`/payment/${auctionId}/${bidId}`);
+        }}
         className="w-full py-3 rounded-xl font-semibold text-sm transition-all duration-150 active:scale-95"
         style={{
           background:

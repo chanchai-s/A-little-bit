@@ -39,7 +39,7 @@ const SellerUserListProduct = () => {
 
   return (
     <div className="min-h-screen bg-[#fbf9f6] text-[#1b1c1a] font-['Manrope']">
-      <main className="max-w-[1440px] mx-auto flex min-h-screen">
+      <main className="mx-auto flex min-h-screen">
         {/* SideNavBar */}
         <aside className="hidden md:flex flex-col gap-4 p-6 bg-[#f5f3f0] w-64 border-r border-[#efeeeb] sticky top-[73px] h-[calc(100vh-73px)]">
           <div className="mb-8">
@@ -112,36 +112,6 @@ const SellerUserListProduct = () => {
           </div>
         </section>
       </main>
-
-      {/* Footer */}
-      <footer className="bg-[#efeeeb] w-full py-12 px-8 mt-24">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-8 max-w-[1440px] mx-auto">
-          <div>
-            <span className="text-lg font-['Newsreader']">
-              The Digital Curator
-            </span>
-            <p className="text-xs uppercase tracking-tighter text-[#59413e] mt-2">
-              © 2024 The Digital Curator. All rights reserved.
-            </p>
-          </div>
-          <div className="flex flex-wrap justify-center gap-8">
-            {[
-              "Privacy Policy",
-              "Terms of Sale",
-              "Appraisal Services",
-              "Contact Us",
-            ].map((link) => (
-              <a
-                key={link}
-                className="text-xs uppercase tracking-tighter text-[#59413e] hover:text-[#9e1b1b] transition-colors"
-                href="#"
-              >
-                {link}
-              </a>
-            ))}
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };
