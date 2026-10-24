@@ -59,11 +59,10 @@ const userRouter = createBrowserRouter([
 
 function AppRouter() {
   const user = useUserStore((state) => state.user);
-  // console.log('user', user)
-  // const userRouter = user 
+
   return (
     <Suspense>
-      {<RouterProvider router={userRouter}></RouterProvider>}
+      <RouterProvider router={user ? userRouter : guestRouter} />
     </Suspense>
   );
 }
